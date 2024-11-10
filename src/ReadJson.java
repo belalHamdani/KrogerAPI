@@ -16,6 +16,7 @@ import org.json.simple.parser.ParseException;
 
 // Program for print data in JSON format.
 public class ReadJson {
+    public int charNum=0;
     public static void main(String args[]) throws ParseException {
         // In java JSONObject is used to create JSON object
         // which is a subclass of java.util.HashMap.
@@ -28,28 +29,31 @@ public class ReadJson {
 
         // To print in JSON format.
         System.out.print(file.get("Tution Fees"));
-        pull();
-
+new ReadJson();
     }
 
-    public static void pull() throws ParseException {
+    public ReadJson(){
+        try {
+            pull();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+    public  void pull() throws ParseException {
         String output = "abc";
         String totlaJson="";
         try {
 
-            URL url = new URL("https://api.kroger.com/v1/connect/oauth2/token");
+            URL url = new URL("https://api.api-ninjas.com/v1/animals?name=Zebra");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "application/json");
+          //  conn.setRequestProperty("Accept", "application/json");
 
-            conn.setRequestProperty("Authorization", "Basic Zm9vZHByb2R1Y3RzZm9ybXljc2NsYXNzMjAyNC0yNDMyNjEyNDMwMzQyNDRhNTU3NzU0NzI1NzZkMzUzMzQxNGY1NTQ0NTY3NDM5NjU2Yjc3NmE1YTc1Mzg3OTRmNmYzODMzMzQzMTc3NzEzNDc1NGY2Yjc5MzQ2YjUyNTgzMDY1NDU2ZTM3NzQ2YTM5NDc1MzZlNGYyMTY5NzE2NzgyODcyMDM0MTQx:OVJta3VYbm1jTTF0UUd1Wm1ScEtUT19MN21jUEVzWVVxVWFoUUtfRAo=)");
+            conn.setRequestProperty("X-Api-Key", "on5u/Dp4rqF4mukon+86Fw==6SfQxME0nQYXBS53");
 
             conn.setDoOutput(true);
-            OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-            writer.write("grant_type=client_credentials&scope=product.full.read");
-            writer.flush();
-            writer.close();
-            conn.getOutputStream().close();
+
 
             if (conn.getResponseCode() != 200) {
 
@@ -78,22 +82,61 @@ public class ReadJson {
 
         JSONParser parser = new JSONParser();
         //System.out.println(str);
-        org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) parser.parse(totlaJson);
-        System.out.println(jsonObject);
+        org.json.simple.JSONArray jsonArray = (org.json.simple.JSONArray) parser.parse(totlaJson);
+        System.out.println(jsonArray);
 
         try {
 
-            String name = (String)jsonObject.get("name");
+            int f = jsonArray.size();
+            // for (int z = 0; z < f; ++z) {
+            JSONObject gaga = (JSONObject) jsonArray.get(charNum);
 
-            org.json.simple.JSONArray msg = (org.json.simple.JSONArray) jsonObject.get("films");
-            int n =   msg.size(); //(msg).length();
-            for (int i = 0; i < n; ++i) {
-                String test =(String) msg.get(i);
-                System.out.println(test);
+
+            String name = (String) gaga.get("name");
+
+            org.json.simple.JSONObject msg = (org.json.simple.JSONObject) gaga.get("taxonomy");
+
+            //int n = msg.size(); //(msg).length();
+
+            //for (int i = 0; i < n; ++i) {
+                String test = (String) msg.get("class");
+                System.out.println("\n"+"My class is " + test);
+            //    tya.append("\n"+"My class is " + test);
+
+
                 // System.out.println(person.getInt("key"));
+           // }
+            org.json.simple.JSONArray smg = (org.json.simple.JSONArray) gaga.get("locations");
+
+            int a = smg.size(); //(msg).length();
+
+            for (int i = 0; i < a; ++i) {
+                String test1 = (String) smg.get(i);
+                System.out.println(test1);
+               // tya.append("\n"+"My locations are " + test);
             }
-            //. String name= (String)jsonObject.get("height");
-            System.out.println(name);
+            org.json.simple.JSONObject character = (org.json.simple.JSONObject) gaga.get("characteristics");
+
+            //int n = msg.size(); //(msg).length();
+
+            //for (int i = 0; i < n; ++i) {
+            String prey = (String) character.get("prey");
+            System.out.println("My prey is " + prey);
+
+            String diet = (String) character.get("diet");
+            System.out.println("My diet is " + diet);
+
+            String lifespan = (String) character.get("lifespan");
+            System.out.println("My lifespan is " + lifespan);
+
+            String height = (String) character.get("height");
+            System.out.println("My height is " + height);
+
+            String weight = (String) character.get("weight");
+            System.out.println("My weight is " + weight);
+
+
+            System.out.println("I am a " + name);
         }
 
         catch (Exception e) {
