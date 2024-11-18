@@ -189,38 +189,22 @@ public class Animal implements ActionListener {
             int a = smg.size(); //(msg).length();
 
             for (int i = 0; i < a; ++i) {
-                String test = (String) smg.get(i);
-                System.out.println(test);
-                tya.append("\n"+"My locations are " + test);
+                String test1 = (String) smg.get(i);
+                System.out.println(test1);
+                tya.append("\n"+"My locations are " + test1);
             }
-//            org.json.simple.JSONArray aff = (org.json.simple.JSONArray) gaga.get("affiliation");
-//
-//            int w = aff.size(); //(msg).length();
-//
-//            for (int i = 0; i < w; ++i) {
-//                String test = (String) aff.get(i);
-//                System.out.println(test);
-//            }
+            org.json.simple.JSONArray vra = (org.json.simple.JSONArray) gaga.get("prey");
 
-            //     String spg = (String) gaga.get("gender");
+            int l = vra.size(); //(msg).length();
 
-
-            //   System.out.println(spg);
+            for (int i = 0; i < l; ++i) {
+                String prey = (String) vra.get(i);
+                System.out.println(prey);
+                tya.append("\n"+"My prey is " + prey);
+            }
 
 
-            // System.out.println(person.getInt("key"));
 
-            //  org.json.simple.JSONArray sag = (org.json.simple.JSONArray) gaga.get("hair");
-
-            //   int q = sag.size(); //(msg).length();
-
-            // for (int i = 0; i < q; ++i) {
-            //      String test = (String) sag.get(i);
-            //    System.out.println(test);
-
-
-            // System.out.println(person.getInt("key"));
-            //   }
             String height = (String) gaga.get("height");
             System.out.println("My name is " + name);
             tya.append("\n"+"My name is " + name);
