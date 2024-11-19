@@ -37,6 +37,7 @@ public class ReadJson implements ActionListener {
     private JTextArea ta;
     private int WIDTH=800;
     private int HEIGHT=700;
+    int apikey = "1bea1cc7bc0739e9af0009d474d6fa9990d266cf0f62e0ddf6d0766c4b58ca6e";
 
     public static void main(String args[]) throws ParseException {
         // In java JSONObject is used to create JSON object
@@ -134,10 +135,19 @@ new ReadJson();
 
 
             }
+            if (command.equals("Reset"))
+            {
+
+                tya.setText("Facts:");
+                po.setText("Insert Animal Name");
+            }
 
 
         }
+
     }
+
+
     public  void pull() throws ParseException {
         String output = "abc";
         String totlaJson="";
@@ -260,6 +270,128 @@ new ReadJson();
 
 
     }
+    public  void pullImage() throws ParseException {
+        String output = "abc";
+        String totlaJson="";
+        System.out.println(po.getText());
+        String saver = po.getText();
+
+
+        int start = saver.indexOf("Name") +5;
+        saver = saver.substring(start);
+        System.out.println(saver);
+
+        try {
+
+            URL url = new URL("https://api.api-ninjas.com/v1/animals?name="+saver);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            //  conn.setRequestProperty("Accept", "application/json");
+
+           // conn.setRequestProperty("X-Api-Key", "on5u/Dp4rqF4mukon+86Fw==6SfQxME0nQYXBS53");
+
+            conn.setDoOutput(true);
+
+
+            if (conn.getResponseCode() != 200) {
+
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + conn.getResponseCode());
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    (conn.getInputStream())));
+
+
+            System.out.println("Output from Server .... \n");
+            while ((output = br.readLine()) != null) {
+                System.out.println(output);
+                totlaJson+=output;
+            }
+
+            conn.disconnect();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        JSONParser parser = new JSONParser();
+        //System.out.println(str);
+        org.json.simple.JSONArray jsonArray = (org.json.simple.JSONArray) parser.parse(totlaJson);
+        System.out.println(jsonArray);
+
+        try {
+
+            int f = jsonArray.size();
+            // for (int z = 0; z < f; ++z) {
+            JSONObject gaga = (JSONObject) jsonArray.get(charNum);
+
+
+            String name = (String) gaga.get("name");
+
+            org.json.simple.JSONObject msg = (org.json.simple.JSONObject) gaga.get("taxonomy");
+
+            //int n = msg.size(); //(msg).length();
+
+            //for (int i = 0; i < n; ++i) {
+            String test = (String) msg.get("class");
+            System.out.println("\n"+"My class is " + test);
+            tya.append("\n"+"My class is "  + test);
+
+
+            // System.out.println(person.getInt("key"));
+            // }
+            org.json.simple.JSONArray smg = (org.json.simple.JSONArray) gaga.get("locations");
+
+            int a = smg.size(); //(msg).length();
+
+            for (int i = 0; i < a; ++i) {
+                String test1 = (String) smg.get(i);
+                System.out.println(test1);
+                tya.append("\n"+"My locations are "  + test1);
+                // tya.append("\n"+"My locations are " + test);
+            }
+            org.json.simple.JSONObject character = (org.json.simple.JSONObject) gaga.get("characteristics");
+
+            //int n = msg.size(); //(msg).length();
+
+            //for (int i = 0; i < n; ++i) {
+            String prey = (String) character.get("prey");
+            System.out.println("My prey is " + prey);
+            tya.append("\n"+"My prey is "  + prey);
+
+            String diet = (String) character.get("diet");
+            System.out.println("My diet is " + diet);
+            tya.append("\n"+"My diet is "  + diet);
+
+            String lifespan = (String) character.get("lifespan");
+            System.out.println("My lifespan is " + lifespan);
+            tya.append("\n"+"My lifespan is "  + lifespan);
+
+            String height = (String) character.get("height");
+            System.out.println("My height is " + height);
+            tya.append("\n"+"My height is "  + height);
+
+            String weight = (String) character.get("weight");
+            System.out.println("My weight is " + weight);
+            tya.append("\n"+"My weight is "  + weight);
+
+
+            System.out.println("I am a " + name);
+            tya.append("\n"+"I am a "  + name);
+        }
+
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+
+    }
     private void showEventDemo() {
         JButton NextButton = new JButton("Next");
         JButton ResetButton = new JButton("Reset");
@@ -285,7 +417,7 @@ new ReadJson();
         mainFrame.add(ResetButton, BorderLayout.WEST);
 
         mainFrame.add(po, BorderLayout.WEST);
-        mainFrame.add(ResetButton, BorderLayout.WEST);
+        mainFrame.add(ResetButton, BorderLayout.SOUTH);
 
         blackPanel.add(scrollPane);
 
@@ -295,12 +427,7 @@ new ReadJson();
 
         mainFrame.setVisible(true);
     }
-    if (command.equals("Reset"))
-    {
-        ta.setText(null);
-        tya.setText(null);
-        po.setText(null);
-    }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
