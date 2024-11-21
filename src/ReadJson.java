@@ -30,6 +30,7 @@ public class ReadJson implements ActionListener {
     private JLabel imageLabel;
     private JPanel imagePanel;
     private JPanel blackPanel;
+    public JPanel centerPanel;
     public JScrollPane scrollPane;
     private JMenuBar mb;
     private JMenu file, edit, help;
@@ -60,14 +61,19 @@ new ReadJson();
     public ReadJson(){
         prepareGUI();
         showEventDemo();
-        ReadJson swingControlDemo = new ReadJson();
-      //  swingControlDemo.addImage();
+       // ReadJson swingControlDemo = new ReadJson();
+//        try {
+//            addImage();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
 
     }
     private void prepareGUI() {
         mainFrame = new JFrame("Animal Facts");
         mainFrame.setSize(WIDTH, HEIGHT);
         mainFrame.setLayout(new BorderLayout());
+        imagePanel = new JPanel();
 
         tya=new JTextArea("Facts:");
         po = new JTextArea("Insert Animal Name");
@@ -98,10 +104,13 @@ new ReadJson();
         });
         controlPanel = new JPanel();
         blackPanel = new JPanel();
+        centerPanel = new JPanel();
         controlPanel.setLayout(new GridLayout(2,3)); //set the layout of the pannel
         blackPanel.setLayout(new GridLayout(1,3));
-        mainFrame.add(controlPanel);
-        mainFrame.add(blackPanel);
+        centerPanel.setLayout(new GridLayout(1,2));
+        centerPanel.add(blackPanel);
+        mainFrame.add(centerPanel);
+      //  mainFrame.add(blackPanel);
         //mainFrame.add(statusLabel);
         mainFrame.setVisible(true);
     }
@@ -121,7 +130,7 @@ new ReadJson();
                 try {
                     pull();
                     System.out.println("trying to pull image");
-                   // pullImage();
+                    pullImage();
                 } catch (ParseException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -148,28 +157,28 @@ new ReadJson();
                 tya.setText("Facts:");
                 po.setText("Insert Animal Name");
             }
-            if (command.equals("OK")) {
-                try {
-                    imagePanel.removeAll();
-                    addImage();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                // statusLabel.setText("Ok Button clicked.");
-            }
+//            if (command.equals("OK")) {
+//                try {
+//                  //  imagePanel.removeAll();
+//                    addImage();
+//                } catch (IOException ex) {
+//                    ex.printStackTrace();
+//                }
+//                // statusLabel.setText("Ok Button clicked.");
+//            }
 
 
         }
 
     }
-    private void addImage() throws IOException {
+    private void addImage(String test) throws IOException {
         try {
-            String path = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Plains_Zebra_Equus_quagga.jpg/800px-Plains_Zebra_Equus_quagga.jpg\n";
+            String path = test;//"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Plains_Zebra_Equus_quagga.jpg/800px-Plains_Zebra_Equus_quagga.jpg";
 
 
 
             URL url = new URL(path);
-            BufferedImage ErrorImage = ImageIO.read(new File("Error.png"));
+            BufferedImage ErrorImage = ImageIO.read(new File("animals.jpg"));
             BufferedImage inputImageBuff = ImageIO.read(url.openStream());
 
 
@@ -187,7 +196,7 @@ new ReadJson();
                 imagePanel.repaint();
 
                 imagePanel.add(imageLabel);
-                mainFrame.add(imagePanel, BorderLayout.CENTER);
+                centerPanel.add(imagePanel);
 
             }
             else{
@@ -198,14 +207,13 @@ new ReadJson();
         } catch (IOException e) {
             System.out.println(e);
             System.out.println("sadness");
-            BufferedImage ErrorImage = ImageIO.read(new File("Error.png"));
+            BufferedImage ErrorImage = ImageIO.read(new File("animals.jpg"));
             JLabel imageLabel = new JLabel(new ImageIcon(ErrorImage.getScaledInstance(800, 589, Image.SCALE_SMOOTH)));
 
             imagePanel.removeAll();
             imagePanel.repaint();
             imagePanel.add(imageLabel);
-            mainFrame.add(imagePanel);
-
+            centerPanel.add(imagePanel);
         }
 
 //        JButton submitButton = new JButton("Submit");
@@ -416,7 +424,7 @@ new ReadJson();
             String test = (String) msg.get("original");
             System.out.println("\n"+"" + test);
           //  tya.append("\n"+"image"  + test);
-
+            addImage(test);
 
             // System.out.println(person.getInt("key"));
             // }
@@ -496,6 +504,7 @@ new ReadJson();
         mainFrame.add(ResetButton, BorderLayout.SOUTH);
 
         blackPanel.add(scrollPane);
+
 
 
 
