@@ -3,10 +3,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,10 +13,12 @@ import java.net.URL;
 // video to load jar
 //https://www.youtube.com/watch?v=QAJ09o3Xl_0
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 // Program for print data in JSON format.
@@ -27,6 +27,8 @@ public class ReadJson implements ActionListener {
     private JFrame mainFrame;
     private JLabel statusLabel;
     private JPanel controlPanel;
+    private JLabel imageLabel;
+    private JPanel imagePanel;
     private JPanel blackPanel;
     public JScrollPane scrollPane;
     private JMenuBar mb;
@@ -37,7 +39,8 @@ public class ReadJson implements ActionListener {
     private JTextArea ta;
     private int WIDTH=800;
     private int HEIGHT=700;
-    int apikey = "1bea1cc7bc0739e9af0009d474d6fa9990d266cf0f62e0ddf6d0766c4b58ca6e";
+    String saver = "";
+    String apikey = "1bea1cc7bc0739e9af0009d474d6fa9990d266cf0f62e0ddf6d0766c4b58ca6e";
 
     public static void main(String args[]) throws ParseException {
         // In java JSONObject is used to create JSON object
@@ -57,6 +60,8 @@ new ReadJson();
     public ReadJson(){
         prepareGUI();
         showEventDemo();
+        ReadJson swingControlDemo = new ReadJson();
+      //  swingControlDemo.addImage();
 
     }
     private void prepareGUI() {
@@ -115,6 +120,8 @@ new ReadJson();
 
                 try {
                     pull();
+                    System.out.println("trying to pull image");
+                   // pullImage();
                 } catch (ParseException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -141,18 +148,87 @@ new ReadJson();
                 tya.setText("Facts:");
                 po.setText("Insert Animal Name");
             }
+            if (command.equals("OK")) {
+                try {
+                    imagePanel.removeAll();
+                    addImage();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                // statusLabel.setText("Ok Button clicked.");
+            }
 
 
         }
 
     }
+    private void addImage() throws IOException {
+        try {
+            String path = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Plains_Zebra_Equus_quagga.jpg/800px-Plains_Zebra_Equus_quagga.jpg\n";
 
+
+
+            URL url = new URL(path);
+            BufferedImage ErrorImage = ImageIO.read(new File("Error.png"));
+            BufferedImage inputImageBuff = ImageIO.read(url.openStream());
+
+
+            ImageIcon inputImage;
+            if (inputImageBuff != null) {
+                inputImage = new ImageIcon(inputImageBuff.getScaledInstance(800, 700, Image.SCALE_SMOOTH));
+                // = new JLabel();
+                if (inputImage != null) {
+                    imageLabel = new JLabel(inputImage);
+                } else {
+                    imageLabel =new JLabel(new ImageIcon(ErrorImage.getScaledInstance(800, 589, Image.SCALE_SMOOTH)));
+
+                }
+                imagePanel.removeAll();
+                imagePanel.repaint();
+
+                imagePanel.add(imageLabel);
+                mainFrame.add(imagePanel, BorderLayout.CENTER);
+
+            }
+            else{
+                imageLabel =new JLabel(new ImageIcon(ErrorImage.getScaledInstance(800, 589, Image.SCALE_SMOOTH)));
+
+            }
+
+        } catch (IOException e) {
+            System.out.println(e);
+            System.out.println("sadness");
+            BufferedImage ErrorImage = ImageIO.read(new File("Error.png"));
+            JLabel imageLabel = new JLabel(new ImageIcon(ErrorImage.getScaledInstance(800, 589, Image.SCALE_SMOOTH)));
+
+            imagePanel.removeAll();
+            imagePanel.repaint();
+            imagePanel.add(imageLabel);
+            mainFrame.add(imagePanel);
+
+        }
+
+//        JButton submitButton = new JButton("Submit");
+//        JButton cancelButton = new JButton("Cancel");
+//
+//        submitButton.setActionCommand("Submit");
+//        cancelButton.setActionCommand("Cancel");
+//
+//        submitButton.addActionListener(new ButtonClickListener());
+//        cancelButton.addActionListener(new ButtonClickListener());
+//
+//        controlPanel.add(okButton, BorderLayout.EAST);
+//        controlPanel.add(submitButton, BorderLayout.CENTER);
+//        controlPanel.add(cancelButton, BorderLayout.WEST);
+
+        mainFrame.setVisible(true);
+    }
 
     public  void pull() throws ParseException {
         String output = "abc";
         String totlaJson="";
         System.out.println(po.getText());
-        String saver = po.getText();
+       saver = po.getText();
 
 
         int start = saver.indexOf("Name") +5;
@@ -273,17 +349,17 @@ new ReadJson();
     public  void pullImage() throws ParseException {
         String output = "abc";
         String totlaJson="";
-        System.out.println(po.getText());
-        String saver = po.getText();
-
-
-        int start = saver.indexOf("Name") +5;
-        saver = saver.substring(start);
-        System.out.println(saver);
+//        System.out.println(po.getText());
+//        String saver = po.getText();
+//
+//
+//        int start = saver.indexOf("Name") +5;
+//        saver = saver.substring(start);
+//        System.out.println(saver);
 
         try {
 
-            URL url = new URL("https://api.api-ninjas.com/v1/animals?name="+saver);
+            URL url = new URL("https://serpapi.com/search?engine=google_images&q="+saver+"&location=Austin,+TX,+Texas,+United+States&api_key=1bea1cc7bc0739e9af0009d474d6fa9990d266cf0f62e0ddf6d0766c4b58ca6e");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             //  conn.setRequestProperty("Accept", "application/json");
@@ -320,68 +396,68 @@ new ReadJson();
 
         JSONParser parser = new JSONParser();
         //System.out.println(str);
-        org.json.simple.JSONArray jsonArray = (org.json.simple.JSONArray) parser.parse(totlaJson);
-        System.out.println(jsonArray);
+        org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) parser.parse(totlaJson);
+        System.out.println(jsonObject);
 
         try {
 
-            int f = jsonArray.size();
+           // int f = jsonObject.size();
             // for (int z = 0; z < f; ++z) {
-            JSONObject gaga = (JSONObject) jsonArray.get(charNum);
+            JSONArray gaga = (JSONArray) jsonObject.get("images_results");
 
 
-            String name = (String) gaga.get("name");
+           // String name = (String) gaga.get("name");
 
-            org.json.simple.JSONObject msg = (org.json.simple.JSONObject) gaga.get("taxonomy");
+            org.json.simple.JSONObject msg = (org.json.simple.JSONObject) gaga.get(0);
 
             //int n = msg.size(); //(msg).length();
 
             //for (int i = 0; i < n; ++i) {
-            String test = (String) msg.get("class");
-            System.out.println("\n"+"My class is " + test);
-            tya.append("\n"+"My class is "  + test);
+            String test = (String) msg.get("original");
+            System.out.println("\n"+"" + test);
+          //  tya.append("\n"+"image"  + test);
 
 
             // System.out.println(person.getInt("key"));
             // }
-            org.json.simple.JSONArray smg = (org.json.simple.JSONArray) gaga.get("locations");
-
-            int a = smg.size(); //(msg).length();
-
-            for (int i = 0; i < a; ++i) {
-                String test1 = (String) smg.get(i);
-                System.out.println(test1);
-                tya.append("\n"+"My locations are "  + test1);
-                // tya.append("\n"+"My locations are " + test);
-            }
-            org.json.simple.JSONObject character = (org.json.simple.JSONObject) gaga.get("characteristics");
-
-            //int n = msg.size(); //(msg).length();
+//            org.json.simple.JSONArray smg = (org.json.simple.JSONArray) gaga.get("locations");
+//
+//            int a = smg.size(); //(msg).length();
+//
+//            for (int i = 0; i < a; ++i) {
+//                String test1 = (String) smg.get(i);
+//                System.out.println(test1);
+//                tya.append("\n"+"My locations are "  + test1);
+//                // tya.append("\n"+"My locations are " + test);
+//            }
+//            org.json.simple.JSONObject character = (org.json.simple.JSONObject) gaga.get("characteristics");
+//
+//            //int n = msg.size(); //(msg).length();
 
             //for (int i = 0; i < n; ++i) {
-            String prey = (String) character.get("prey");
-            System.out.println("My prey is " + prey);
-            tya.append("\n"+"My prey is "  + prey);
-
-            String diet = (String) character.get("diet");
-            System.out.println("My diet is " + diet);
-            tya.append("\n"+"My diet is "  + diet);
-
-            String lifespan = (String) character.get("lifespan");
-            System.out.println("My lifespan is " + lifespan);
-            tya.append("\n"+"My lifespan is "  + lifespan);
-
-            String height = (String) character.get("height");
-            System.out.println("My height is " + height);
-            tya.append("\n"+"My height is "  + height);
-
-            String weight = (String) character.get("weight");
-            System.out.println("My weight is " + weight);
-            tya.append("\n"+"My weight is "  + weight);
-
-
-            System.out.println("I am a " + name);
-            tya.append("\n"+"I am a "  + name);
+//            String prey = (String) character.get("prey");
+//            System.out.println("My prey is " + prey);
+//            tya.append("\n"+"My prey is "  + prey);
+//
+//            String diet = (String) character.get("diet");
+//            System.out.println("My diet is " + diet);
+//            tya.append("\n"+"My diet is "  + diet);
+//
+//            String lifespan = (String) character.get("lifespan");
+//            System.out.println("My lifespan is " + lifespan);
+//            tya.append("\n"+"My lifespan is "  + lifespan);
+//
+//            String height = (String) character.get("height");
+//            System.out.println("My height is " + height);
+//            tya.append("\n"+"My height is "  + height);
+//
+//            String weight = (String) character.get("weight");
+//            System.out.println("My weight is " + weight);
+//            tya.append("\n"+"My weight is "  + weight);
+//
+//
+//            System.out.println("I am a " + name);
+//            tya.append("\n"+"I am a "  + name);
         }
 
         catch (Exception e) {
@@ -398,7 +474,7 @@ new ReadJson();
 
 
         JButton backButton = new JButton("back");
-        JLabel tickaLabel = new JLabel("ticka");
+
 
 
 
